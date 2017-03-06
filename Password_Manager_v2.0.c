@@ -31,16 +31,46 @@ struct record
 
 // Function Protorypes
 void menu(int state);
+void menu1(int state);
 int enter_record(void);
 
     
 
 main()
 {
-    char ch;
+    char ch, user[30];
     int menu_index=0;
     
-    menu(0);
+    menu1(menu_index);
+    while(1)
+    {
+        if(kbhit())
+        {
+            ch=getch();
+            if(ch==72 && menu_index > -1)  // UP key
+            {
+                menu_index--;
+            }
+            else if(ch==80 && menu_index < 3)  // else if DOWN key
+            {
+                menu_index++;
+            }
+            
+            if(menu_index > 2)
+            {
+                menu_index=0;
+            }
+            else if(menu_index < 0)
+            {
+                menu_index=2;
+            }
+            menu1(menu_index);
+            Sleep(40);
+        }
+    }
+    
+    menu_index=0;
+    menu(menu_index);
     while(1)
     {
         if(kbhit())
@@ -50,7 +80,7 @@ main()
                                 If it's one of them then we increment/decrement
                         */
             
-            ch = getch();
+            ch = getch(); 
             if(ch==72 && menu_index < 4)  // UP key
             {
                 menu_index--;
@@ -72,7 +102,73 @@ main()
         } // end if kbhit()
     } // end while
 }
-
+void menu1(int state)
+{
+    clrscr();
+    switch(state)
+    {
+        case 0:
+        {
+            printf("\n\n\t\t\t\t\t\t");
+            textcolor(LIGHTCYAN);
+            cprintf("Log in");
+            printf("\n\n");
+            
+            textcolor(LIGHTRED);
+            printf("\t\t\t\t\t\t");
+            cprintf("Register");
+            printf("\n\n");
+            
+            printf("\t\t\t\t\t\t");
+            cprintf("Exit");
+            printf("\n");
+            break;
+        }
+        
+        case 1:
+        {
+            printf("\n\n\t\t\t\t\t\t");
+            textcolor(LIGHTRED);
+            cprintf("Log in");
+            printf("\n\n");
+            
+            textcolor(LIGHTCYAN);
+            printf("\t\t\t\t\t\t");
+            cprintf("Register");
+            printf("\n\n");
+            
+            printf("\t\t\t\t\t\t");
+            textcolor(LIGHTRED);
+            cprintf("Exit");
+            printf("\n");
+            
+            break;
+        }
+        
+        case 2:
+        {
+            printf("\n\n\t\t\t\t\t\t");
+            textcolor(LIGHTRED);
+            cprintf("Log in");
+            printf("\n\n");
+            
+            printf("\t\t\t\t\t\t");
+            cprintf("Register");
+            printf("\n\n");
+            
+            printf("\t\t\t\t\t\t");
+            textcolor(LIGHTCYAN);
+            cprintf("Exit");
+            printf("\n");
+            break;
+        }
+        
+        default :
+        {
+            printf("Bug %d", state);
+        }
+    }// end switch
+} // end void menu1
 void menu(int state)
 {
     
