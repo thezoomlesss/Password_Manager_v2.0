@@ -14,6 +14,10 @@
         - add te functions for each option
         - More to come...
 */
+
+#define prinln  printf    // because I can't seem to stop using println 
+
+
 #include <stdio.h>
 #include <stdlib.h> // For the delay()
 #include <windows.h> // used for system("CLS")    could become useful
@@ -24,83 +28,24 @@ struct record
 {
     char title[25];
     char username[30];
-    char password[30];
+    char password[30];                                                                
     char email[35];
     char notes[50];
 };
 
 // Function Protorypes
-void menu(int state);
-void menu1(int state);
+void menu(int state);   // Main menu
+void menu1(int state);  // Login/Register menu
+void menu_input(void);
+void menu1_input(void);
 int enter_record(void);
 
     
 
 main()
 {
-    char ch, user[30];
-    int menu_index=0;
-    
-    menu1(menu_index);
-    while(1)
-    {
-        if(kbhit())
-        {
-            ch=getch();
-            if(ch==72 && menu_index > -1)  // UP key
-            {
-                menu_index--;
-            }
-            else if(ch==80 && menu_index < 3)  // else if DOWN key
-            {
-                menu_index++;
-            }
-            
-            if(menu_index > 2)
-            {
-                menu_index=0;
-            }
-            else if(menu_index < 0)
-            {
-                menu_index=2;
-            }
-            menu1(menu_index);
-            Sleep(40);
-        }
-    }
-    
-    menu_index=0;
-    menu(menu_index);
-    while(1)
-    {
-        if(kbhit())
-        {
-            /*
-                                We take in the input and check if it's either UP or DOWN arrow key
-                                If it's one of them then we increment/decrement
-                        */
-            
-            ch = getch(); 
-            if(ch==72 && menu_index < 4)  // UP key
-            {
-                menu_index--;
-            }
-            else if(ch==80 && menu_index>-1)  // else if DOWN key
-            {
-                menu_index++;
-            }
-            if(menu_index > 3)
-            {
-                menu_index=0;
-            }
-            else if( menu_index < 0 )
-            {
-                menu_index=3;
-            }
-            menu(menu_index);
-            Sleep(40);
-        } // end if kbhit()
-    } // end while
+    menu1_input();
+    menu_input();
 }
 void menu1(int state)
 {
@@ -173,47 +118,47 @@ void menu(int state)
 {
     
     clrscr();
-    printf("\t\t\t\t\tMenu\n\n");
+    printf("\t\t\t\t\t\t  Menu\n\n");
     switch(state)
     {
         case 0:
         {
             textcolor(LIGHTGREEN);
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Enter Record");
             printf("\n");
             
             textcolor(LIGHTRED);
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Display Record");
             printf("\n");
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Test2");
             printf("\n");
-            printf("\t\t\t\t\t");
-            cprintf("Test3");
+            printf("\t\t\t\t\t\t");
+            cprintf("Exit");
             printf("\n");
             break;
         }
         case 1:
         {
             textcolor(LIGHTRED);
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Enter Record");
             printf("\n");
             
             
             textcolor(LIGHTGREEN);
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Display Record");
             printf("\n");
             
             textcolor(LIGHTRED);
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Test2");
             printf("\n");
-            printf("\t\t\t\t\t");
-            cprintf("Test3");
+            printf("\t\t\t\t\t\t");
+            cprintf("Exit");
             printf("\n");
             
             break;
@@ -221,22 +166,22 @@ void menu(int state)
         case 2:
         {
             textcolor(LIGHTRED);
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Enter Record");
             printf("\n");
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Display Record");
             printf("\n");
             
             
             textcolor(LIGHTGREEN);
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Test2");
             printf("\n");
             
             textcolor(LIGHTRED);
-            printf("\t\t\t\t\t");
-            cprintf("Test3");
+            printf("\t\t\t\t\t\t");
+            cprintf("Exit");
             printf("\n");
            
             break;
@@ -244,20 +189,20 @@ void menu(int state)
         case 3:
         {
             textcolor(LIGHTRED);
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Enter Record");
             printf("\n");
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Display Record");
             printf("\n");
-            printf("\t\t\t\t\t");
+            printf("\t\t\t\t\t\t");
             cprintf("Test2");
             printf("\n");
             
             
             textcolor(LIGHTGREEN);
-            printf("\t\t\t\t\t");
-            cprintf("Test3");
+            printf("\t\t\t\t\t\t");
+            cprintf("Exit");
             printf("\n");
             break;
         }
@@ -268,10 +213,96 @@ void menu(int state)
     } // end switch
 } // end menu()
 
-int menu(void)
+void menu_input(void)      // This should get passed the user string as a parameter
 {
-    struct record a;
+    char ch;
+    int menu_index=0;
     
+    /*
+                The main menu
+        */
+    menu(menu_index);
+    while(1)
+    {
+        if(kbhit())
+        {
+            /*
+                                We take in the input and check if it's either UP or DOWN arrow key
+                                If it's one of them then we increment/decrement
+                        */
+            
+            ch = getch(); 
+            if(ch==72 && menu_index < 4)  // UP key
+            {
+                menu_index--;
+            }
+            else if(ch==80 && menu_index>-1)  // else if DOWN key
+            {
+                menu_index++;
+            }
+            if(menu_index > 3)
+            {
+                menu_index=0;
+            }
+            else if( menu_index < 0 )
+            {
+                menu_index=3;
+            }
+            
+            // If the user pressed enter
+            if(ch == 13)
+            {                
+                break;
+            }
+            menu(menu_index);
+            Sleep(40);
+        } // end if kbhit()
+    } // end while
+} // end menu input
+
+void menu1_input(void)
+{
+    char ch, user[30];
+    int menu_index=0;
     
-    return(1);
-}
+    /*
+                The Login menu
+        */
+    menu1(menu_index);
+    while(1)
+    {
+        if(kbhit())
+        {
+            /*
+                                We take in the input and check if it's either UP or DOWN arrow key
+                                If it's one of them then we increment/decrement
+                        */
+            ch=getch();
+            if(ch==72 && menu_index > -1)  // UP key
+            {
+                menu_index--;
+            }
+            else if(ch==80 && menu_index < 3)  // else if DOWN key
+            {
+                menu_index++;
+            }
+            
+            if(menu_index > 2)
+            {
+                menu_index=0;
+            }
+            else if(menu_index < 0)
+            {
+                menu_index=2;
+            }
+            
+            // If the user pressed enter
+            if(ch == 13) 
+            {
+                break;
+            }
+            menu1(menu_index);
+            Sleep(40);
+        } // end kbhit()
+    } // end while() 
+} // end menu1_input
