@@ -13,6 +13,10 @@
         - make sure that the program creates all the files needed
         - add te functions for each option
         - More to come...
+        - Remember to check if the files exist 
+        
+        
+         CRASH after unsername > 19 
 */
 
 #define prinln  printf    // because I can't seem to stop using println 
@@ -35,9 +39,9 @@ struct record
 
 // Function Protorypes
 void menu1(int state, int condition);  // Login/Register menu
-void menu1_input(void);
+void menu1_input(int condition);
 void menu1_select(int state);
-void menu(int state);   // Main menu
+void menu(int state, int condition);   // Main menu
 void menu_input(void);
 int enter_record(void);
 
@@ -45,7 +49,7 @@ int enter_record(void);
 
 main()
 {
-    menu1_input();
+    menu1_input(0);
     menu_input();
 }
 void menu1(int state, int condition)
@@ -117,7 +121,7 @@ void menu1(int state, int condition)
     
     if( condition ) menu1_select(state);
 } // end void menu1
-void menu1_input(void)
+void menu1_input(int condition)
 {
     char ch;
     int menu_index=0;
@@ -126,7 +130,7 @@ void menu1_input(void)
                 The Login menu
         */
     menu1(menu_index,0);
-    while(1)
+    while(condition != 1)
     {
         if(kbhit())
         {
@@ -158,20 +162,30 @@ void menu1_input(void)
             {
                 menu1(menu_index,1);
             }
-            menu1(menu_index, 0);
-            Sleep(40);
+            else
+            {
+                menu1(menu_index, 0);
+                Sleep(40);
+            }
+            
         } // end kbhit()
     } // end while() 
+    
+    menu(menu_index,0);
 } // end menu1_input
 void menu1_select(int state)
 {
-    FILE *fp1;
-    char username[20];
+    FILE *fp1, *fp2;
+    char username[20], name_login[20], pass[20], pass_login[20];
+    bool access_name=false, access_pass=false;
     
     switch(state)
     {
         case 0:
         {
+            /*
+                                Reading in the username and we make sure that it is not longer than 19 chars
+                        */
             do
             {
                 clrscr();
@@ -189,28 +203,126 @@ void menu1_select(int state)
                 scanf("%s", username);
                 flushall();
                 
-                if(strlen( username ) > 19 )
+                while(strlen( username ) > 19 )
+                {    
+                    clrscr();
+                    printf("\n\n\t\t\t\t\t\t");
+                    textcolor(LIGHTCYAN);
+                    cprintf("Log In");
+                    
+                    textcolor(LIGHTRED);
+                    printf("\n\n\t\t\t\t");
+                    cprintf("The username can't be longer than 20 characters!");
+                    textcolor(LIGHTGREEN);
+                    printf("\n\t\t\t\t\t");
+                    cprintf("Username: ");
+                    scanf("%s", username);
+                    flushall();
+                }
+
+                fp1= fopen("Access.bin", "r");
+                if(fp1==NULL)
                 {
-                    do
-                    {    
-                        clrscr();
-                        printf("\n\n\t\t\t\t\t\t");
-                        textcolor(LIGHTCYAN);
-                        cprintf("Log In");
-                        
-                        textcolor(LIGHTRED);
-                        printf("\n\n\t\t\t\t");
-                        cprintf("The username can't be longer than 20 characters!");
-                        textcolor(LIGHTGREEN);
-                        printf("\n\t\t\t\t\t");
-                        cprintf("Username: ");
-                        scanf("%s", username);
-                        flushall();
-                    } while(strlen( username ) > 19 );
-                } // end if username > 19 chars
-            } while(strlen( username ) > 19 );
+                    fclose(fp1);
+                    fp1=fopen("Access.bin","w");
+                    fclose(fp1);                              // Creating the "Access.bin" file if it doesn't already exist
+                    fp1=fopen("Access.bin","r");
+                }
+                
+                /*
+                                        Reading from the login list and comparing the username input to the list of logins that we have
+                                */
+                while(fscanf(fp1, "%s", name_login) != EOF )
+                {
+                    if( strcmp( name_login, username) == 0 )
+                    {
+                        access_name = true;
+                        break;
+                    }
+                }
+                
+                // Error message for bad input
+                if(access_name == false)
+                {
+                    textcolor(LIGHTRED);
+                    printf("\t\t\t\t\t");
+                    cprintf("Username unrecognized");
+                    printf("\n");
+                    getch();
+                }
+                
+                
+                
+                // Getting and checking the password
+                
+                clrscr();
+                printf("\n\n\t\t\t\t\t\t");
+                textcolor(LIGHTCYAN);
+                cprintf("Log In");
+                
+                textcolor(LIGHTGREEN);
+                printf("\n\n\t\t\t\t\t");
+                cprintf("Password"); 
+                textcolor(WHITE);
+                cprintf(" (max 20)");
+                textcolor(LIGHTRED);
+                cprintf(": ");
+                scanf("%s", pass);
+                flushall();
+                
+                while(strlen( pass ) > 19 )
+                {    
+                    clrscr();
+                    printf("\n\n\t\t\t\t\t\t");
+                    textcolor(LIGHTCYAN);
+                    cprintf("Log In");
+                    
+                    textcolor(LIGHTRED);
+                    printf("\n\n\t\t\t\t");
+                    cprintf("The password can't be longer than 20 characters!");
+                    textcolor(LIGHTGREEN);
+                    printf("\n\t\t\t\t\t");
+                    cprintf("Password: ");
+                    scanf("%s", pass);
+                    flushall();
+                }
+                
+                fp2= fopen("Access2.bin", "r"); // Accesss2 is the file for the passwords
+                
+                if(fp2 == NULL)
+                {
+                    fclose(fp2);
+                    fp2=fopen("Access2.bin","w");
+                    fclose(fp2);                              // Creating the "Access.bin" file if it doesn't already exist
+                    fp2=fopen("Access2.bin","r");
+                }
+                                                                                                    // MAKE THE USERNAME AND PASS CORRESPOND TO EACH OTHER
+                /*
+                                        Reading from the login list and comparing the username input to the list of logins that we have
+                                */
+                while(fscanf(fp2, "%s", pass_login) != EOF )
+                {
+                    if( strcmp( pass_login, pass) == 0 )
+                    {
+                        access_pass = true;
+                        break;
+                    }
+                }
+                
+                if(access_pass == false)
+                {
+                    textcolor(LIGHTRED);
+                    printf("\t\t\t\t\t");
+                    cprintf("Password unrecognized");
+                    printf("\n");
+                    getch();
+                }
+                
+            } while( access_name == false || access_pass == false );
+            //  check if file exists Get pass
             break;
-        }
+            
+        } // end case 0
         
         case 1:
         {
@@ -229,11 +341,11 @@ void menu1_select(int state)
         }
     } // end switch
     
-    
+    menu1_input(1);
     
 } // end menu1_select
 
-void menu(int state)
+void menu(int state, int condition)
 {
     
     clrscr();
@@ -340,7 +452,7 @@ void menu_input(void)      // This should get passed the user string as a parame
     /*
                 The main menu
         */
-    menu(menu_index);
+    menu(menu_index, 0);
     while(1)
     {
         if(kbhit())
@@ -373,7 +485,7 @@ void menu_input(void)      // This should get passed the user string as a parame
             {                
                 break;
             }
-            menu(menu_index);
+            menu(menu_index, 0);
             Sleep(40);
         } // end if kbhit()
     } // end while
