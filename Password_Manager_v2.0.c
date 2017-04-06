@@ -319,14 +319,97 @@ void menu1_select(int state)
                 }
                 
             } while( access_name == false || access_pass == false );
-            //  check if file exists Get pass
+            fclose(fp1);
+            fclose(fp2);
             break;
             
         } // end case 0
         
         case 1:
         {
-            // register new name and create file
+            // Opening the files to register a new person
+            fp1= fopen("Access.bin", "a");
+            fp2= fopen("Access2.bin", "a");
+            
+            
+            
+            clrscr();
+            printf("\n\n\t\t\t\t\t\t");
+            textcolor(LIGHTCYAN);
+            cprintf("Register");
+            
+            textcolor(LIGHTGREEN);
+            printf("\n\n\t\t\t\t\t");
+            cprintf("Username"); 
+            textcolor(WHITE);
+            cprintf(" (max 20)");
+            textcolor(LIGHTRED);
+            cprintf(": ");
+            scanf("%s", username);
+            flushall();
+            
+            while(strlen( username ) > 19 )
+            {    
+                clrscr();
+                printf("\n\n\t\t\t\t\t\t");
+                textcolor(LIGHTCYAN);
+                cprintf("Register");
+                
+                textcolor(LIGHTRED);
+                printf("\n\n\t\t\t\t");
+                cprintf("The username can't be longer than 20 characters!");
+                textcolor(LIGHTGREEN);
+                printf("\n\t\t\t\t\t");
+                cprintf("Username: ");
+                scanf("%s", username);
+                flushall();
+            }
+            
+            // The pass
+            clrscr();
+            printf("\n\n\t\t\t\t\t\t");
+            textcolor(LIGHTCYAN);
+            cprintf("Register");
+            
+            textcolor(LIGHTGREEN);
+            printf("\n\n\t\t\t\t\t");
+            cprintf("Password"); 
+            textcolor(WHITE);
+            cprintf(" (max 20)");
+            textcolor(LIGHTRED);
+            cprintf(": ");
+            scanf("%s", pass);
+            flushall();
+            
+            while(strlen( pass ) > 19 )
+            {    
+                clrscr();
+                printf("\n\n\t\t\t\t\t\t");
+                textcolor(LIGHTCYAN);
+                cprintf("Register");
+                
+                textcolor(LIGHTRED);
+                printf("\n\n\t\t\t\t");
+                cprintf("The password can't be longer than 20 characters!");
+                textcolor(LIGHTGREEN);
+                printf("\n\t\t\t\t\t");
+                cprintf("Password: ");
+                scanf("%s", pass);
+                flushall();
+            }
+            
+            clrscr();
+            fprintf(fp1, "%s\n", username);
+            fprintf(fp2, "%s\n", pass);
+            
+            textcolor(LIGHTGREEN);
+            printf("\t\t\t\t\t");
+            cprintf("Registration successful!");
+            printf("\n");
+            getch();
+            
+            fclose(fp1);
+            fclose(fp2);
             break;
         }
         
