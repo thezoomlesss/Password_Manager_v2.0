@@ -9,11 +9,9 @@
     TO DO LIST:
         - Create the interface
         - add the key stroke functions
-        - make the login into the program
-        - make sure that the program creates all the files needed
-        - add te functions for each option
+        - Check the indexes of the usernames and passwords for the login 
+        - add the functions for each option
         - More to come...
-        - Remember to check if the files exist 
         
         
          CRASH after unsername > 19 
@@ -178,7 +176,7 @@ void menu1_select(int state)
     FILE *fp1, *fp2;
     char username[20], name_login[20], pass[20], pass_login[20];
     bool access_name=false, access_pass=false, reg_name=false;
-    
+    int username_index=0, pass_index=0;
     switch(state)
     {
         case 0:
@@ -203,6 +201,7 @@ void menu1_select(int state)
                 scanf("%s", username);
                 flushall();
                 
+                // Username too long
                 while(strlen( username ) > 19 )
                 {    
                     clrscr();
@@ -220,12 +219,13 @@ void menu1_select(int state)
                     flushall();
                 }
 
+                // Creating the "Access.bin" file if it doesn't already exist
                 fp1= fopen("Access.bin", "r");
                 if(fp1==NULL)
                 {
                     fclose(fp1);
                     fp1=fopen("Access.bin","w");
-                    fclose(fp1);                              // Creating the "Access.bin" file if it doesn't already exist
+                    fclose(fp1);                                                  
                     fp1=fopen("Access.bin","r");
                 }
                 
@@ -234,6 +234,7 @@ void menu1_select(int state)
                                 */
                 while(fscanf(fp1, "%s", name_login) != EOF )
                 {
+                    username_index++;
                     if( strcmp( name_login, username) == 0 )
                     {
                         access_name = true;
@@ -302,6 +303,7 @@ void menu1_select(int state)
                                 */
                 while(fscanf(fp2, "%s", pass_login) != EOF )
                 {
+                    pass_index++;
                     if( strcmp( pass_login, pass) == 0 )
                     {
                         access_pass = true;
@@ -309,16 +311,20 @@ void menu1_select(int state)
                     }
                 }
                 
-                if(access_pass == false)
+                if(access_pass == false || username_index != pass_index)
                 {
                     textcolor(LIGHTRED);
                     printf("\t\t\t\t\t");
-                    cprintf("Password unrecognized");
+                    cprintf("Username & password combination does not match");
                     printf("\n");
+                    access_name=false;
+                    access_pass=false;
+                    username_index=0;
+                    pass_index=0;
                     getch();
                 }
                 
-            } while( access_name == false || access_pass == false );
+            } while( access_name == false || access_pass == false  );
             fclose(fp1);
             fclose(fp2);
             break;
